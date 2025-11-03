@@ -7,16 +7,36 @@ def handle_args() -> Namespace:
     Parse and return command line arguments.
 
     Returns:
-        Parsed command line arguments
+        Parsed command line arguments with validated collection IDs
+        
+    Raises:
+        ValueError: If collection_ids is provided but empty after splitting on comma
     """
     parser = argparse.ArgumentParser(description='Manage WARC tracker checks.')
 
     # Add mutually exclusive group for collection_id and collection_ids
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--collection_id', type=str, help='Single collection ID to process')
-    group.add_argument('--collection_ids', type=str, nargs='+', help='List of collection IDs to process')
+    group.add_argument('--collection_ids', type=str, nargs='+', help='Comma-separated list of collection IDs to process')
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    
+    # Validate collection_ids if provided
+    if hasattr(args, 'collection_ids') and args.collection_ids:
+        # Flatten the list in case of multiple arguments and split each on comma
+        split_ids = []
+        for id_string in args.collection_ids:
+            split_ids.extend(id_string.split(','))
+        
+        # Remove any empty strings that might result from trailing/leading commas
+        split_ids = [id_str.strip() for id_str in split_ids if id_str.strip()]
+        
+        if not split_ids:
+            raise ValueError('At least one valid collection ID must be provided with --collection_ids')
+            
+        args.collection_ids = split_ids
+    
+    return args
 
 
 def check_collection(collection_id: str) -> None:
