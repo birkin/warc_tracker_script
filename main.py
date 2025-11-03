@@ -22,21 +22,22 @@ def validate_collection_ids(collection_input: str) -> list[str]:
 
     input_str = collection_input.strip()
 
-    # Check for mixed separators (both spaces and commas)
-    if ' ' in input_str and ',' in input_str:
-        raise ValueError('Use either spaces or commas to separate IDs, not both')
+    # If commas are present, treat commas as the only valid separators.
+    # Spaces around commas are allowed, but spaces used as separators in
+    # addition to commas are not allowed (e.g., "id1,id2 id3").
+    if ',' in input_str:
+        parts = [part.strip() for part in input_str.split(',')]
+        # If any part still contains a space, then spaces were used as separators
+        # in addition to commas; that's invalid mixed separators.
+        if any(' ' in part for part in parts if part):
+            raise ValueError('Use either spaces or commas to separate IDs, not both')
+        cleaned_ids = [part for part in parts if part]
+        if not cleaned_ids:
+            raise ValueError('No valid collection IDs found after processing input')
+        return cleaned_ids
 
-    # If only spaces are used as separators, treat as a single ID
-    if ' ' in input_str:
-        return [input_str]
-
-    # Split on commas and clean up the results
-    cleaned_ids = [id_str.strip() for id_str in input_str.split(',') if id_str.strip()]
-
-    if not cleaned_ids:
-        raise ValueError('No valid collection IDs found after processing input')
-
-    return cleaned_ids
+    # No commas: treat the entire input as a single ID (even if it contains spaces)
+    return [input_str]
 
 
 def handle_args() -> Namespace:
