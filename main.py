@@ -110,3 +110,18 @@ def manage_gsheet_writer() -> None:
 
 if __name__ == '__main__':
     manage_gsheet_writer()
+
+
+# def manage_gsheet_writer() -> None:
+#     """
+#     Demonstrates how to use the Google Sheets API to read-from and write-to a Google Sheet.
+#     """
+#     ## confirm we're reading settings -------------------------------
+#     log.info(f'project_id, ``{GSHEET_CREDENTIALS["project_id"]}``')
+#     log.info(f'service-account-email, ``{GSHEET_CREDENTIALS["client_email"]}``')
+
+#     run_simple_read()
+#     tweak_worksheet()
+#     run_simple_write()
+#     run_find()
+#     return None
