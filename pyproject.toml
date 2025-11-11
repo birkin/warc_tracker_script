@@ -5,8 +5,9 @@ description = "Code to track WARC files downloaded from Internet Archive."
 readme = "coming"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "httpx",
-    "python-dotenv",
+    "httpx~=0.28.0",
+    "python-dotenv~=1.2.0",
+    "gspread~=6.2.0",
 ]
 
 [dependency-groups]
